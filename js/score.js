@@ -1,19 +1,9 @@
-(function () {
-  var btn = document.querySelector(".primary-button");
-  var scoreEl = document.querySelector("[data-score]");
-  if (!btn || !scoreEl) return;
-
-  btn.addEventListener("click", function () {
-    var target = 0.86;
-    var frames = 20;
-    var step = target / frames;
-    var frame = 0;
-    scoreEl.textContent = "0.00";
-    var interval = setInterval(function () {
-      frame++;
-      var v = Math.min(target, frame * step);
-      scoreEl.textContent = v.toFixed(2);
-      if (frame >= frames) clearInterval(interval);
-    }, 50);
-  });
-})();
+export function initNav() {
+  var path = location.pathname.split("/").pop() || "index.html";
+  var links = document.querySelectorAll(".nav-link");
+  for (var i = 0; i < links.length; i++) {
+    var href = links[i].getAttribute("href");
+    if (href === path) links[i].classList.add("active");
+    else links[i].classList.remove("active");
+  }
+}
