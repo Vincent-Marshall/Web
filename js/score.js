@@ -1,9 +1,14 @@
-export function initNav() {
-  var path = location.pathname.split("/").pop() || "index.html";
-  var links = document.querySelectorAll(".nav-link");
-  for (var i = 0; i < links.length; i++) {
-    var href = links[i].getAttribute("href");
-    if (href === path) links[i].classList.add("active");
-    else links[i].classList.remove("active");
-  }
+import { animate, scrambleText } from "https://cdn.jsdelivr.net/npm/animejs@4/+esm";
+
+export function initScoreAnim() {
+  var btn = document.querySelector(".primary-button");
+  var scoreEl = document.querySelector("[data-score]");
+  if (!btn || !scoreEl) return;
+
+  btn.addEventListener("click", function () {
+    animate(scoreEl, {
+      innerHTML: scrambleText({ chars: "0-9" }),
+      duration: 1500,
+    });
+  });
 }
