@@ -3,10 +3,8 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from pypinyin import lazy_pinyin, Style
 from snownlp import SnowNLP
-from storage import save_record, get_history
+from storage import init_db, save_record, get_history
 from datetime import datetime, timezone
-
-
 
 app = FastAPI()
 
@@ -16,6 +14,8 @@ app.add_middleware(
     allow_methods=["GET", "POST"],
 )
 
+
+init_db() #初始化建表
 
 
 profile = {

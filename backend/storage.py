@@ -1,22 +1,51 @@
-import json
+import sqlite3
 
-HISTORY_FILE = "history.json"
+DB_FILE = "history.db"
 
-def load_history():
-    try:
-        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return []
+def get_conn():
+    conn = sqlite3.connect(DB_FILE)
+    conn.row_factory = sqlite3.Row      # 让查询结果带上列名（默认是元组）
+    return conn
+
+
+def init_db():
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS history (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        text TEXT,
+        score REAL,
+        label TEXT,
+        pinyin TEXT,
+        created_at TEXT
+    )
+    """)
+    conn.commit()
+    conn.close()
+
 
 def save_record(record):
-    records = load_history()
-    records.append(record)
-    with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-        json.dump(records, f, ensure_ascii=False, indent=2)
+    conn = get_conn()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO history (text, score, label, pinyin, created_at) VALUES (?, ?, ?, ?, ?)",
+        [record["text"], record["score"], record["label"], record["pinyin"], record["created_at"]],
+    )
+    conn.commit()
+    conn.close()
 
 
 def get_history(limit):
-    records = load_history()   # 读出文件里的全部记录
-    records.reverse()          # 倒过来：新的排前面
-    return records[:limit]        # 切一刀：保留指定的条数
+    conn = get_conn()
+    cur = conn.cursor()
+    rows = cur.execute(
+        "SELECT * FROM history ORDER BY created_at DESC LIMIT ?",
+        [limit],
+    ).fetchall()
+    conn.close()
+
+    records = []
+    for row in rows:
+        records.append(dict(row))
+    return records
