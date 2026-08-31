@@ -1,0 +1,30 @@
+[
+  {
+    "text": "今天的风很轻，适合把脑海里的想法慢慢写下来。",
+    "score": 1.0,
+    "label": "偏积极",
+    "pinyin": "jīn tiān de fēng hěn qīng ， shì hé bǎ nǎo hǎi lǐ de xiǎng fǎ màn màn xiě xià lái 。",
+    "created_at": "2026-08-28T11:32:55+00:00"
+  },
+  {
+    "text": "穆里尼奥万岁！",
+    "score": 0.84,
+    "label": "偏积极",
+    "pinyin": "mù lǐ ní ào wàn suì ！",
+    "created_at": "2026-08-28T11:33:13+00:00"
+  },
+  {
+    "text": "“蚩姹风雷”",
+    "score": 0.45,
+    "label": "中性",
+    "pinyin": "“ chī chà fēng léi ”",
+    "created_at": "2026-08-28T11:33:43+00:00"
+  },
+  {
+    "text": "牛来",
+    "score": 0.5,
+    "label": "中性",
+    "pinyin": "niú lái",
+    "created_at": "2026-08-28T11:33:53+00:00"
+  }
+]
