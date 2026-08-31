@@ -70,4 +70,4 @@ def analyze(req: AnalyzeRequest):
 
 @app.get("/api/history")
 def history():
-    return get_history()  # ← 读出文件里的最近 10 条
+    return get_history(10)  # ← 读出文件里的最近 10 条

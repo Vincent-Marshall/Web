@@ -16,7 +16,7 @@ def save_record(record):
         json.dump(records, f, ensure_ascii=False, indent=2)
 
 
-def get_history():
+def get_history(limit):
     records = load_history()   # 读出文件里的全部记录
     records.reverse()          # 倒过来：新的排前面
-    return records[:10]        # 切一刀：只留最近 10 条
+    return records[:limit]        # 切一刀：保留指定的条数
