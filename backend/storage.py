@@ -21,6 +21,10 @@ def init_db():
         created_at TEXT
     )
     """)
+    
+    # 给需要经常筛选的字段创建索引，提升查询性能
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_history_created ON history(created_at)")
+    
     conn.commit()
     conn.close()
 
