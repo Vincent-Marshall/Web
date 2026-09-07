@@ -1,25 +1,43 @@
 # dependencies
 node_modules/
-
 # next.js
 .next/
 out/
-
 # production
 build/
 dist/
-
 # editor
 .vscode/*
 !.vscode/extensions.json
-
 # misc
 .DS_Store
 *.log
 .env*
 
+# Python 虚拟环境（根目录 + backend目录）
+.venv/
+venv/
+env/
 backend/.venv/
+
+# Python 缓存字节码
+__pycache__/
 backend/__pycache__/
 *.pyc
+*.pyo
+*.pyd
 
+# Python 数据库、本地数据文件
 backend/history.db
+*.db
+*.sqlite
+*.sqlite3
+
+# python 环境导出临时、编译产物
+*.egg-info/
+dist/
+build/
+*.egg
+
+# 操作系统临时文件
+Thumbs.db
