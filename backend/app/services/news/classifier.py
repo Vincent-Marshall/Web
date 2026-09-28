@@ -39,11 +39,16 @@ def classify_world(items: list) -> list[str]:
 
 
 def _title(it) -> str:
-    return getattr(it, "title", "") or ""
+    """兼容 dict 与 NewsItem 对象两种输入（测试与内部调用各自方便）。"""
+    if isinstance(it, dict):
+        return (it.get("title") or "").strip()
+    return (getattr(it, "title", None) or "").strip()
 
 
 def _summary(it) -> str:
-    return getattr(it, "summary", None) or ""
+    if isinstance(it, dict):
+        return (it.get("summary") or "").strip()
+    return (getattr(it, "summary", None) or "").strip()
 
 
 def _classify_by_model(items: list) -> list[str]:
