@@ -1,0 +1,110 @@
+/* 科技早报页（沿用全站设计变量，见 variables.css） */
+
+.digest-control-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.digest-control-row label {
+  color: var(--text-soft);
+  font-size: 15px;
+}
+
+.digest-select {
+  margin-left: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  background: var(--surface-soft);
+  color: var(--text-main);
+  font-size: 15px;
+  outline: none;
+}
+
+.digest-select:focus {
+  border-color: var(--brand);
+}
+
+.digest-sent {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.digest-notice {
+  margin-top: 12px;
+  color: var(--brand);
+  font-size: 14px;
+}
+
+.digest-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.digest-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+.digest-count {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.digest-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.digest-item:last-child {
+  border-bottom: none;
+}
+
+.digest-item h3 {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.digest-item h3 a {
+  color: var(--text-main);
+  text-decoration: none;
+}
+
+.digest-item h3 a:hover {
+  color: var(--brand);
+}
+
+.digest-gist {
+  color: var(--text-main);
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+.digest-detail {
+  color: var(--text-soft);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.digest-src {
+  margin-top: 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.digest-empty {
+  color: var(--text-muted);
+  text-align: center;
+  padding: 24px 0;
+}

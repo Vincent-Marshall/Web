@@ -1,0 +1,13 @@
+# 早报执行服务（oneshot，由 digest.timer 触发，也可手动 systemctl start digest.service）
+# 注意：ExecStart 里的路径按实际部署位置修改（deploy.md 以 /opt/ai-toolbox/backend 为准）
+
+[Unit]
+Description=AI 工具箱科技早报任务
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/ai-toolbox/backend
+ExecStart=/opt/ai-toolbox/backend/.venv/bin/python scripts/run_digest.py
+# .env 由应用内 pydantic-settings 从 backend/.env 读取，无需 EnvironmentFile

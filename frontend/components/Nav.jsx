@@ -13,6 +13,7 @@ export default function Nav() {
   const pathname = usePathname();
   const items = [
     { href: "/",         label: "个人主页" },
+    { href: "/news-digest", label: "科技早报" },
     { href: "/text-lab", label: "文字实验室" },
   ];
 

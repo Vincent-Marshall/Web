@@ -1,0 +1,15 @@
+# 每天北京时间 9:00 触发早报任务
+# 启用：sudo cp digest.timer digest.service /etc/systemd/system/
+#       sudo systemctl enable --now digest.timer
+# 验证：systemctl list-timers | grep digest
+
+[Unit]
+Description=AI 工具箱科技早报（每天 9:00）
+
+[Timer]
+OnCalendar=*-*-* 09:00:00 Asia/Shanghai
+Persistent=true
+# Persistent=true：服务器停机错过的时间点，开机后自动补跑一次
+
+[Install]
+WantedBy=timers.target
