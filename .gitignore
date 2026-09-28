@@ -13,6 +13,11 @@ dist/
 .DS_Store
 *.log
 .env*
+!.env.example
+
+# 运行期数据与日志（本地生成，不入库）
+backend/logs/
+backend/data/
 
 # Python 虚拟环境（根目录 + backend目录）
 .venv/
