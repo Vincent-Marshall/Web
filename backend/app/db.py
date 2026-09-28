@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS news_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     url_hash TEXT UNIQUE NOT NULL,
     source TEXT NOT NULL,
+    category TEXT NOT NULL DEFAULT 'tech',  -- tech/cn_politics/world_politics/world_life
     title TEXT NOT NULL,
     url TEXT NOT NULL,
     summary TEXT,
@@ -102,9 +103,21 @@ def db_cursor(commit: bool = True):
         conn.close()
 
 
+def _migrate(cur) -> None:
+    """轻量 schema 演进：给已存在的旧库补新列。
+
+    单机小项目不引入 alembic 迁移框架——检查缺列 + ALTER TABLE 足够，
+    迁移逻辑集中在这一处，将来加列照抄即可。
+    """
+    cols = {row[1] for row in cur.execute("PRAGMA table_info(news_items)").fetchall()}
+    if "category" not in cols:
+        cur.execute("ALTER TABLE news_items ADD COLUMN category TEXT NOT NULL DEFAULT 'tech'")
+
+
 def init_db() -> None:
     with db_cursor() as cur:
         cur.executescript(SCHEMA)
+        _migrate(cur)
 
 
 def query_all(sql: str, params: tuple = ()) -> list[dict]:

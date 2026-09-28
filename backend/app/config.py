@@ -46,6 +46,8 @@ class Settings(BaseSettings):
     # ---------- 早报 ----------
     digest_top_n: int = 10          # 每期早报收录的条数上限
     digest_news_hours: int = 24     # 只收录最近 N 小时发布的新闻
+    # 类别配额（比例之和应为 1；某类候选不足时配额自动让渡）
+    digest_quotas: str = "tech:0.5,cn_politics:0.15,world_politics:0.2,world_life:0.15"
 
     # ---------- CORS（逗号分隔，.env 里好写） ----------
     cors_origins: str = "http://localhost:3000,https://horseforever.cn"
