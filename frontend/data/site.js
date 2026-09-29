@@ -6,16 +6,10 @@
 // 它们可以改成从网络接口实时取——而组件那边照样一个字都不用动。
 
 export const home = {
-  heroTitle: "关于我",
-  heroSubtitle: "项目，创意，灵感，心得，我的作品",
-  featuredWork: {
-    kicker: "作品",
-    title: "页面总结",
-    copy: "粘贴链接，一键生成结构化摘要",
-    linkLabel: "打开作品",
-  },
+  heroTitle: "AI 工具箱",
+  heroSubtitle: "每日诗词 · 英文句子 · 画作鉴赏，AI 与你共读",
   identity: {
     motto: "已识乾坤大，尤怜草木青",
-    learning: "零到全栈",
+    learning: "零到全栈 → AI 应用开发",
   },
 };

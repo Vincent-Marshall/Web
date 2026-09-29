@@ -92,6 +92,12 @@ CREATE TABLE IF NOT EXISTS summaries (
     created_at TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_summaries_created ON summaries(created_at);
+
+-- 首页三区内容按日期缓存：一天构建一次，重复请求零外部调用
+CREATE TABLE IF NOT EXISTS daily_items (
+    date TEXT PRIMARY KEY,
+    items_json TEXT NOT NULL
+);
 """
 
 

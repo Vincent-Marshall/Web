@@ -15,7 +15,7 @@ from app.config import settings
 from app.db import init_db
 from app.errors import register_exception_handlers
 from app.logging_conf import setup_logging
-from app.routers import fortune, news, summary
+from app.routers import daily, fortune, news, summary
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -46,6 +46,7 @@ register_exception_handlers(app)
 app.include_router(news.router)
 app.include_router(fortune.router)
 app.include_router(summary.router)
+app.include_router(daily.router)
 
 
 @app.get("/api/health")

@@ -1,63 +1,96 @@
 "use client";
 
-// 个人主页。这一节把它从"纯展示"改成了"会去后端取数据"。
-// 打开页面时先用 site.js 的 home 打底，再用 useEffect 去 GET /api/profile，
-// 拿到后端数据后 setData 更新界面。因为要在浏览器里发请求，所以顶上写了 "use client"。
-// 请求失败时（比如后端没跑、跨源被拦）就保持打底数据、把错误打到控制台，页面不至于崩。
-// 注意：后端地址暂时写死在下面，跟着课件，这一节最后会把它收进 .env.local。
+// 门户首页：hero + 每日三区（诗词 / 英文句子 / 画作鉴赏，各带 AI 赏析）+ 身份卡。
+// 数据流：GET /api/daily。后端对第三方源有本地兜底、按日期缓存，正常情况不会加载失败。
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import Nav from "./Nav.jsx";
 import PageHeading from "./PageHeading.jsx";
 import AnimatedCardGrid from "./AnimatedCardGrid.jsx";
 import { home } from "../data/site.js";
+
 const API = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-
 export default function HomeView() {
-  const [data, setData] = useState(home);
+  const [daily, setDaily] = useState(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    async function loadProfile() {
-      try {
-        const res = await fetch(`${API}/api/profile`);
-        if (!res.ok) {
-          throw new Error(`主页数据加载失败：${res.status}`);
-        }
-        setData(await res.json());
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    loadProfile();
+    fetch(`${API}/api/daily`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`加载失败：${res.status}`);
+        return res.json();
+      })
+      .then(setDaily)
+      .catch((e) => setError(e.message));
   }, []);
 
   return (
     <AnimatedCardGrid className="dashboard-grid">
       <article className="hero-stage panel-full">
         <Nav />
-        <PageHeading title={data.heroTitle} subtitle={data.heroSubtitle} />
+        <PageHeading title={home.heroTitle} subtitle={home.heroSubtitle} />
       </article>
 
-      <article className="panel panel-full featured-work-panel card">
-        <p className="section-kicker">{data.featuredWork.kicker}</p>
-        <p className="featured-title">{data.featuredWork.title}</p>
-        <p className="featured-copy">{data.featuredWork.copy}</p>
-        <Link className="featured-link" href="/summary">
-          <span className="featured-link-label">{data.featuredWork.linkLabel}</span>
-          <span className="arrow">›</span>
-        </Link>
-      </article>
+      {daily && (
+        <>
+          <article className="panel card daily-zone">
+            <p className="section-kicker">每日诗词</p>
+            <p className="daily-poem">{daily.poem.content}</p>
+            <p className="daily-meta">
+              —— {daily.poem.author}《{daily.poem.title}》
+            </p>
+            {daily.poem.appreciation && (
+              <p className="daily-appreciation">AI 赏析：{daily.poem.appreciation}</p>
+            )}
+          </article>
+
+          <article className="panel card daily-zone">
+            <p className="section-kicker">每日英文句子</p>
+            <p className="daily-quote">“{daily.quote.content}”</p>
+            <p className="daily-meta">—— {daily.quote.author}</p>
+            {daily.quote.appreciation && (
+              <p className="daily-appreciation">AI 赏析：{daily.quote.appreciation}</p>
+            )}
+          </article>
+
+          <article className="panel card daily-zone">
+            <p className="section-kicker">每日画作鉴赏</p>
+            {daily.painting.image && (
+              <img
+                className="daily-painting"
+                src={daily.painting.image}
+                alt={daily.painting.title}
+              />
+            )}
+            <p className="daily-meta">
+              {daily.painting.title} · {daily.painting.artist}（{daily.painting.year}）
+            </p>
+            {daily.painting.appreciation && (
+              <p className="daily-appreciation">AI 赏析：{daily.painting.appreciation}</p>
+            )}
+          </article>
+        </>
+      )}
+
+      {!daily && !error && (
+        <article className="panel panel-full card">
+          <p className="digest-empty">今日内容加载中…</p>
+        </article>
+      )}
+      {error && (
+        <article className="panel panel-full card">
+          <p className="lab-error">今日内容加载失败：{error}</p>
+        </article>
+      )}
 
       <article className="panel panel-full identity-panel card">
         <div className="identity-item">
           <p className="section-kicker">座右铭</p>
-          <p className="identity-value identity-quote">{data.identity.motto}</p>
+          <p className="identity-value identity-quote">{home.identity.motto}</p>
         </div>
         <div className="identity-item">
           <p className="section-kicker">正在学习</p>
-          <p className="identity-value">{data.identity.learning}</p>
+          <p className="identity-value">{home.identity.learning}</p>
         </div>
       </article>
     </AnimatedCardGrid>

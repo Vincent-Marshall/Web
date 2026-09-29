@@ -1,0 +1,43 @@
+/* 门户首页三区（沿用全站设计变量） */
+
+.daily-zone {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+}
+
+.daily-poem {
+  font-size: 20px;
+  line-height: 1.7;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: 0.5px;
+}
+
+.daily-quote {
+  font-size: 18px;
+  line-height: 1.6;
+  font-style: italic;
+  color: var(--text-main);
+}
+
+.daily-meta {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.daily-appreciation {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border-soft);
+  color: var(--text-soft);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.daily-painting {
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+  border-radius: var(--radius-soft);
+}
