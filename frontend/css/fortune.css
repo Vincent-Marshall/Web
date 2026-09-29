@@ -1,0 +1,222 @@
+/* 命理小站页（沿用全站设计变量） */
+
+.fortune-form {
+  display: grid;
+  gap: 12px;
+}
+
+.fortune-form label {
+  color: var(--text-soft);
+  font-size: 15px;
+}
+
+.fortune-form input[type="date"],
+.fortune-form select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-soft);
+  background: var(--surface-soft);
+  color: var(--text-main);
+  font-size: 16px;
+  outline: none;
+}
+
+.fortune-form input:focus,
+.fortune-form select:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.14);
+}
+
+.fortune-gender {
+  display: flex;
+  gap: 10px;
+}
+
+.gender-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  background: var(--surface-soft);
+  color: var(--text-soft);
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.gender-btn.active {
+  border-color: var(--brand);
+  background: rgba(0, 113, 227, 0.08);
+  color: var(--brand);
+  font-weight: 600;
+}
+
+/* 黄历 */
+.almanac-body {
+  display: grid;
+  gap: 10px;
+}
+
+.almanac-lunar {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.almanac-ganzhi,
+.almanac-extra {
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+.almanac-label {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.almanac-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.almanac-tag {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.almanac-tag.yi {
+  background: rgba(52, 168, 83, 0.12);
+  color: #1e7e34;
+}
+
+.almanac-tag.ji {
+  background: rgba(234, 67, 53, 0.1);
+  color: #b42318;
+}
+
+/* 命盘 */
+.pillar-table {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 16px;
+}
+
+.pillar-head,
+.pillar-row {
+  display: grid;
+  grid-template-columns: 0.7fr 1fr 1fr 1fr 1.3fr;
+  align-items: center;
+  padding: 10px 12px;
+  font-size: 15px;
+}
+
+.pillar-head {
+  color: var(--text-muted);
+  font-size: 13px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.pillar-row {
+  border-radius: 12px;
+}
+
+.pillar-row:nth-child(odd) {
+  background: var(--surface-soft);
+}
+
+.pillar-name {
+  color: var(--text-soft);
+  font-weight: 600;
+}
+
+.pillar-ganzhi {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-main);
+}
+
+.chart-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.wuxing-bars {
+  display: grid;
+  gap: 10px;
+}
+
+.wuxing-row {
+  display: grid;
+  grid-template-columns: 24px 1fr 20px;
+  align-items: center;
+  gap: 10px;
+}
+
+.wuxing-name {
+  color: var(--text-soft);
+  font-size: 15px;
+}
+
+.wuxing-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  overflow: hidden;
+}
+
+.wuxing-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s ease;
+}
+
+.wuxing-count {
+  color: var(--text-muted);
+  font-size: 14px;
+  text-align: right;
+}
+
+/* 解读 */
+.reading-body {
+  display: grid;
+  gap: 16px;
+}
+
+.reading-block h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--brand);
+  margin-bottom: 6px;
+}
+
+.reading-block p {
+  color: var(--text-soft);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.fortune-disclaimer {
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+@media (max-width: 640px) {
+  .pillar-head,
+  .pillar-row {
+    grid-template-columns: 0.8fr 1fr 1fr 1.2fr;
+  }
+  .pillar-head span:last-child,
+  .pillar-row span:last-child {
+    display: none;
+  }
+}

@@ -95,6 +95,11 @@ def compute_bazi(birth_date: str, birth_hour: int, gender: int | None = None) ->
         "wuxing_stats": stats,
     }
 
+    # 日主旺衰（不同版本库方法名略有差异，用 getattr 兼容）
+    get_wangshuai = getattr(ec, "getDayWangShuai", None)
+    if callable(get_wangshuai):
+        result["wangshuai"] = get_wangshuai()
+
     if gender is not None:
         yun = ec.getYun(gender)
         # 列表第一项是起运前的空大运，过滤掉再取前六个

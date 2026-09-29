@@ -73,6 +73,13 @@ CREATE TABLE IF NOT EXISTS kb_meta (
     key TEXT PRIMARY KEY,
     value TEXT
 );
+
+-- 命理解读缓存：同一生日+时辰+性别只生成一次（重复查询不重复烧 token）
+CREATE TABLE IF NOT EXISTS readings (
+    chart_key TEXT PRIMARY KEY,
+    reading_json TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
 """
 
 
