@@ -17,7 +17,8 @@ WorkingDirectory=/opt/ai-toolbox/backend
 # - SQLite 单文件写库，多 worker 会引入锁竞争；
 # - 手动早报的内存状态是单进程的，多 worker 会不一致；
 # 个人站点并发量下单 worker 完全够用，将来扩容再拆状态与存储。
-ExecStart=/opt/ai-toolbox/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1
+# 端口 8001：同机电商项目已占用 8000
+ExecStart=/opt/ai-toolbox/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8001 --workers 1
 Restart=always
 RestartSec=3
 

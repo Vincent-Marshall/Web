@@ -67,11 +67,23 @@ def _set_meta(cur, key: str, value: str) -> None:
 
 
 def build_index(force: bool = False) -> dict:
-    """构建/刷新索引。内容指纹未变且已有索引时直接跳过（增量成本为零）。"""
+    """构建/刷新索引。内容指纹未变且已有索引时直接跳过（增量成本为零）。
+
+    特例：现有索引是 ngram（降级产物），而 bge-m3 现在可用 → 自动重建升级，
+    保证向量化服务恢复后索引回到最优状态。
+    """
     fingerprint = _fingerprint()
     if not force and _meta("fingerprint") == fingerprint and _meta("method"):
         count = query_one("SELECT COUNT(*) AS n FROM kb_chunks")["n"]
-        return {"rebuilt": False, "chunks": count, "method": _meta("method")}
+        method = _meta("method")
+        if method == "ngram":
+            try:
+                embed_texts(["向量化可用性探测"])  # bge-m3 恢复则触发下方重建
+                force = True
+            except Exception:
+                pass
+        if not force:
+            return {"rebuilt": False, "chunks": count, "method": method}
 
     chunks = _load_chunks()
     if not chunks:

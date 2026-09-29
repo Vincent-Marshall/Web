@@ -17,6 +17,30 @@ sudo apt update && sudo apt install -y git python3 python3-venv nginx
 
 # 1.2 安装 Ollama（本地模型：fast 档任务 + 向量化）
 curl -fsSL https://ollama.com/install.sh | sh
+# ⚠️ 国内服务器实测：官方安装脚本的二进制下载（ollama.com CDN / GitHub）
+# 可能零速卡死。若脚本超过 3 分钟无进展，Ctrl+C 改手动安装：
+#   a. 确认 /usr/local/bin/ollama 与 /usr/local/lib/ollama 已存在（脚本可能已装完二进制）
+#   b. 手动补 systemd 单元（注意系统用户无家目录，必须指定 HOME）：
+sudo tee /etc/systemd/system/ollama.service > /dev/null << 'EOF'
+[Unit]
+Description=Ollama Service
+After=network-online.target
+[Service]
+ExecStart=/usr/local/bin/ollama serve
+User=ollama
+Group=ollama
+Environment="HOME=/usr/share/ollama"
+Environment="OLLAMA_MODELS=/usr/share/ollama/.ollama/models"
+Restart=always
+RestartSec=3
+[Install]
+WantedBy=default.target
+EOF
+sudo useradd -r -s /usr/sbin/nologin ollama 2>/dev/null || true
+sudo mkdir -p /usr/share/ollama && sudo chown ollama:ollama /usr/share/ollama
+sudo systemctl daemon-reload && sudo systemctl enable --now ollama
+
+# 模型拉取（默认 registry 实测约 5MB/s，两个模型共 6G，约 20 分钟）
 ollama pull qwen2.5:7b   # 约 5G，fast 档对话模型
 ollama pull bge-m3       # 约 1.2G，RAG 向量化模型
 
@@ -49,8 +73,8 @@ vim .env   # 填入 DEEPSEEK_API_KEY、SMTP_USER/SMTP_PASS/SMTP_TO
            # 确认 CORS_ORIGINS 含 https://horseforever.cn
 
 # 2.4 验证可启动（先手动跑一次，Ctrl+C 退出）
-.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
-curl http://127.0.0.1:8000/api/health   # 应返回 {"status":"ok"}
+.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8001
+curl http://127.0.0.1:8001/api/health   # 应返回 {"status":"ok"}
 ```
 
 ## 3. systemd 守护与定时任务
@@ -112,7 +136,7 @@ sudo nginx -t && sudo systemctl reload nginx
 | 看后端状态 | `systemctl status backend` |
 | 看后端日志 | `journalctl -u backend -f` |
 | 应用日志文件 | `tail -f /opt/ai-toolbox/backend/logs/app.log`（2MB×5 滚动） |
-| 手动生成早报 | `curl -X POST http://127.0.0.1:8000/api/news/run` |
+| 手动生成早报 | `curl -X POST http://127.0.0.1:8001/api/news/run` |
 | 手动跑定时脚本 | `cd /opt/ai-toolbox/backend && .venv/bin/python scripts/run_digest.py` |
 | 前端更新 | 本地构建 → scp 到 /var/www/ai-toolbox（无需重启） |
 | 后端更新 | git pull → `sudo systemctl restart backend` |
