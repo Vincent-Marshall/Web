@@ -44,7 +44,7 @@ export default function HomeView() {
         <p className="section-kicker">{data.featuredWork.kicker}</p>
         <p className="featured-title">{data.featuredWork.title}</p>
         <p className="featured-copy">{data.featuredWork.copy}</p>
-        <Link className="featured-link" href="/text-lab">
+        <Link className="featured-link" href="/summary">
           <span className="featured-link-label">{data.featuredWork.linkLabel}</span>
           <span className="arrow">›</span>
         </Link>

@@ -15,6 +15,7 @@ import "../css/cards.css";
 import "../css/lab.css";
 import "../css/digest.css";
 import "../css/fortune.css";
+import "../css/summary.css";
 import "../css/responsive.css";
 
 export const metadata = {

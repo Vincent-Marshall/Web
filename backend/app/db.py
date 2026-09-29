@@ -80,6 +80,18 @@ CREATE TABLE IF NOT EXISTS readings (
     reading_json TEXT NOT NULL,
     created_at TEXT NOT NULL
 );
+
+-- 页面总结：链接摘要历史
+CREATE TABLE IF NOT EXISTS summaries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    url TEXT NOT NULL,
+    title TEXT,
+    gist TEXT,
+    points_json TEXT,
+    quote TEXT,
+    created_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_summaries_created ON summaries(created_at);
 """
 
 

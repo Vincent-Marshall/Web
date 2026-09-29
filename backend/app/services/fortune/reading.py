@@ -17,7 +17,7 @@ from pydantic import BaseModel, ValidationError
 
 from app.db import db_cursor, query_one
 from app.errors import AppError
-from app.llm.router import router
+from app.llm.structured import chat_json
 from app.services.fortune.bazi import WUXING_ORDER
 from app.services.fortune.rag import retrieve
 
@@ -103,21 +103,6 @@ def _prompt(chart: dict, contents: list[str]) -> str:
     return PROMPT_TEMPLATE.format(chart=chart_text, kb=kb_text)
 
 
-def _call_model(prompt: str, retry: bool = True) -> Reading:
-    try:
-        text, _ = router.chat(
-            "fortune_reading", [{"role": "user", "content": prompt}], json_mode=True, temperature=0.6
-        )
-        return Reading.model_validate_json(text)
-    except (ValidationError, json.JSONDecodeError, ValueError) as e:
-        if retry:
-            logger.warning("解读 JSON 解析失败，重试一次: %s", e)
-            return _call_model(
-                prompt + "\n\n注意：必须只输出一个合法 JSON 对象，不要有任何其他文字。", retry=False
-            )
-        raise AppError("解读生成失败，请稍后重试", status_code=502) from e
-
-
 def generate_reading(birth_date: str, birth_hour: int, gender: int | None, chart: dict) -> dict:
     """生成（或取缓存）解读。模型全链失败时抛 AppError，由路由层降级为「只返回命盘」。"""
     key = _chart_key(birth_date, birth_hour, gender)
@@ -127,7 +112,10 @@ def generate_reading(birth_date: str, birth_hour: int, gender: int | None, chart
         return json.loads(cached["reading_json"])
 
     contents = _collect_context(chart)
-    reading = _call_model(_prompt(chart, contents))
+    try:
+        reading = chat_json("fortune_reading", _prompt(chart, contents), Reading, temperature=0.6)
+    except (ValidationError, json.JSONDecodeError) as e:
+        raise AppError("解读生成失败，请稍后重试", status_code=502) from e
     data = reading.model_dump()
 
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
