@@ -1,0 +1,25 @@
+# AI 工具箱后端（uvicorn + FastAPI）systemd 服务
+# 放置位置：/etc/systemd/system/backend.service
+# 启用：sudo systemctl daemon-reload && sudo systemctl enable --now backend
+# 状态与日志：systemctl status backend / journalctl -u backend -f
+
+[Unit]
+Description=AI 工具箱 FastAPI 后端
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=aitoolbox
+Group=aitoolbox
+WorkingDirectory=/opt/ai-toolbox/backend
+# 单 worker 是刻意为之：
+# - SQLite 单文件写库，多 worker 会引入锁竞争；
+# - 手动早报的内存状态是单进程的，多 worker 会不一致；
+# 个人站点并发量下单 worker 完全够用，将来扩容再拆状态与存储。
+ExecStart=/opt/ai-toolbox/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 1
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
