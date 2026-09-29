@@ -67,6 +67,12 @@ CREATE TABLE IF NOT EXISTS kb_chunks (
     content TEXT NOT NULL,
     embedding TEXT
 );
+
+-- 知识库索引元信息：内容指纹与向量化方法（bge-m3 / ngram）
+CREATE TABLE IF NOT EXISTS kb_meta (
+    key TEXT PRIMARY KEY,
+    value TEXT
+);
 """
 
 

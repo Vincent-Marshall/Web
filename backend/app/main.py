@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 async def lifespan(_: FastAPI):
     # 启动时建表/迁移：幂等，多跑无害
     init_db()
+    # 知识库索引就绪检查：内容没变就跳过，变了自动重建——启动即服务
+    from app.services.fortune.rag import build_index
+
+    build_index()
     logger.info("AI 工具箱后端启动完成")
     yield
 

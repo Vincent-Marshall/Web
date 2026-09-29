@@ -1,13 +1,12 @@
 """向量化：本地 bge-m3 优先，字符 n-gram 保底。
 
 保底方案的意义：即使 Ollama 挂了、也没有任何云端 embedding 可用，
-检索仍能用字符 n-gram 特征跑起来——可用性优先于检索精度。
+检索仍能用字符 bigram 特征跑起来——可用性优先于检索精度。
 
-⚠️ 一致性约定：知识库构建与查询必须使用同一套向量化方法（维度一致才能算余弦）。
-调用方（rag.py）在构建时记录所用方法，查询时跟随。
+⚠️ 一致性约定：知识库构建与查询必须使用同一套向量化方法。
+调用方（rag.py）在构建时记录所用方法（kb_meta 表），查询时严格跟随。
 """
 
-import hashlib
 import logging
 import math
 
@@ -18,16 +17,10 @@ from app.llm.clients import ProviderError
 
 logger = logging.getLogger(__name__)
 
-NGRAM_DIM = 256  # 保底向量的固定维度
-
 
 def embed_texts(texts: list[str]) -> list[list[float]]:
-    """批量向量化，返回与输入等长的向量列表。"""
-    try:
-        return _ollama_embed(texts)
-    except Exception as e:
-        logger.warning("bge-m3 向量化不可用，降级字符 n-gram: %s", e)
-        return [_ngram_embed(t) for t in texts]
+    """bge-m3 批量向量化；失败时抛出，由调用方决定是否降级。"""
+    return _ollama_embed(texts)
 
 
 def _ollama_embed(texts: list[str]) -> list[list[float]]:
@@ -50,23 +43,26 @@ def _ollama_embed(texts: list[str]) -> list[list[float]]:
     raise ProviderError("Ollama 向量化接口不可用")
 
 
-def _ngram_embed(text: str) -> list[float]:
-    """字符 bigram 哈希成 256 维 TF 向量，L2 归一化。
+def _ngram_embed(text: str) -> dict[str, float]:
+    """字符 bigram 的 TF 向量，稀疏表示 {bigram: L2 归一化权重}。
 
+    用稀疏 dict 而非定长哈希桶：bigram 原样作键，精确匹配、零碰撞——
     中文按相邻字符对切分（「甲乙丙」→「甲乙」「乙丙」），
     这是无任何外部依赖下最简单可用的文本特征。
     """
-    vec = [0.0] * NGRAM_DIM
     grams = [text[i : i + 2] for i in range(max(1, len(text) - 1))]
     if not grams:
         grams = [text[:2]]
+    tf: dict[str, float] = {}
     for g in grams:
-        idx = int(hashlib.md5(g.encode("utf-8")).hexdigest(), 16) % NGRAM_DIM
-        vec[idx] += 1.0
-    norm = math.sqrt(sum(v * v for v in vec)) or 1.0
-    return [v / norm for v in vec]
+        tf[g] = tf.get(g, 0.0) + 1.0
+    norm = math.sqrt(sum(v * v for v in tf.values())) or 1.0
+    return {g: v / norm for g, v in tf.items()}
 
 
-def cosine(a: list[float], b: list[float]) -> float:
-    """余弦相似度（输入已归一化时等价于点积）。"""
+def cosine(a, b) -> float:
+    """余弦相似度。稀疏 dict（ngram）与稠密 list（bge-m3）各自适配。"""
+    if isinstance(a, dict) and isinstance(b, dict):
+        # 稀疏向量：只累加共同 bigram 的乘积，天然忽略无关维度
+        return sum(w * b.get(g, 0.0) for g, w in a.items())
     return sum(x * y for x, y in zip(a, b))
