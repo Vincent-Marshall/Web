@@ -82,17 +82,6 @@ export default function HomeView() {
           <p className="lab-error">今日内容加载失败：{error}</p>
         </article>
       )}
-
-      <article className="panel panel-full identity-panel card">
-        <div className="identity-item">
-          <p className="section-kicker">座右铭</p>
-          <p className="identity-value identity-quote">{home.identity.motto}</p>
-        </div>
-        <div className="identity-item">
-          <p className="section-kicker">正在学习</p>
-          <p className="identity-value">{home.identity.learning}</p>
-        </div>
-      </article>
     </AnimatedCardGrid>
   );
 }

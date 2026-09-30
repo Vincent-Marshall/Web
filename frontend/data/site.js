@@ -8,8 +8,4 @@
 export const home = {
   heroTitle: "AI 工具箱",
   heroSubtitle: "每日诗词 · 英文句子 · 画作鉴赏，AI 与你共读",
-  identity: {
-    motto: "已识乾坤大，尤怜草木青",
-    learning: "零到全栈 → AI 应用开发",
-  },
 };
