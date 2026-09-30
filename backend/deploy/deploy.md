@@ -96,7 +96,10 @@ systemctl list-timers | grep digest   # 每天 09:00（Asia/Shanghai）
 ```bash
 # 4.1 本地构建（在开发机 frontend/ 目录）
 npm install
-npm run build                 # 产物在 frontend/out/
+npm run build:prod            # ⚠️ 必须用 build:prod！产物在 frontend/out/
+# build:prod 会把 NEXT_PUBLIC_API_BASE_URL 设为 https://horseforever.cn；
+# 用普通 npm run build 会嵌入 .env.local 的 localhost:8000，
+# 浏览器从 HTTPS 页面调 http 地址被拦截，全站接口失效（真实踩坑记录）。
 
 # 4.2 上传到服务器
 scp -r out/* root@你的服务器:/var/www/ai-toolbox/

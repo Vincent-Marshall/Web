@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:prod": "NEXT_PUBLIC_API_BASE_URL=https://horseforever.cn next build",
     "start": "next start"
   },
   "dependencies": {
