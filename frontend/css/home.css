@@ -1,9 +1,42 @@
-/* 门户首页三区（沿用全站设计变量） */
+/* 门户首页三区（沿用全站设计变量）
+   布局：三个模块全宽卡片、上下堆叠；画作卡为「左图右文」横向布局 */
 
 .daily-zone {
   display: grid;
   gap: 10px;
   align-content: start;
+}
+
+.daily-zone-painting {
+  grid-template-columns: 300px 1fr;
+  grid-template-areas:
+    "img kicker"
+    "img meta"
+    "img appreciation";
+  align-items: start;
+  column-gap: 24px;
+}
+
+.daily-zone-painting .section-kicker { grid-area: kicker; }
+.daily-zone-painting .daily-meta { grid-area: meta; }
+.daily-zone-painting .daily-appreciation { grid-area: appreciation; }
+
+.daily-zone-painting .daily-painting {
+  grid-area: img;
+  width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: var(--radius-soft);
+}
+
+@media (max-width: 640px) {
+  .daily-zone-painting {
+    grid-template-columns: 1fr;
+    grid-template-areas: "kicker" "img" "meta" "appreciation";
+  }
+  .daily-zone-painting .daily-painting {
+    max-height: 200px;
+  }
 }
 
 .daily-poem {

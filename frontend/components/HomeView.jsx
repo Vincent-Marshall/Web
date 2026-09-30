@@ -33,7 +33,7 @@ export default function HomeView() {
 
       {daily && (
         <>
-          <article className="panel card daily-zone">
+          <article className="panel panel-full card daily-zone">
             <p className="section-kicker">每日诗词</p>
             <p className="daily-poem">{daily.poem.content}</p>
             <p className="daily-meta">
@@ -44,7 +44,7 @@ export default function HomeView() {
             )}
           </article>
 
-          <article className="panel card daily-zone">
+          <article className="panel panel-full card daily-zone">
             <p className="section-kicker">每日英文句子</p>
             <p className="daily-quote">“{daily.quote.content}”</p>
             <p className="daily-meta">—— {daily.quote.author}</p>
@@ -53,8 +53,7 @@ export default function HomeView() {
             )}
           </article>
 
-          <article className="panel card daily-zone">
-            <p className="section-kicker">每日画作鉴赏</p>
+          <article className="panel panel-full card daily-zone daily-zone-painting">
             {daily.painting.image && (
               <img
                 className="daily-painting"
@@ -62,6 +61,7 @@ export default function HomeView() {
                 alt={daily.painting.title}
               />
             )}
+            <p className="section-kicker">每日画作鉴赏</p>
             <p className="daily-meta">
               {daily.painting.title} · {daily.painting.artist}（{daily.painting.year}）
             </p>
