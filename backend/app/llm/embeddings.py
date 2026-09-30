@@ -25,8 +25,10 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
 
 def _ollama_embed(texts: list[str]) -> list[list[float]]:
     payload = {"model": settings.ollama_embed_model, "input": texts}
-    # Ollama 新旧两版接口并存，按新版优先逐个尝试
-    for path in ("/api/embeddings", "/api/embed"):
+    # Ollama 新旧两版接口并存。实测 0.35 版对 bge-m3 的新接口 /api/embeddings
+    # 会返回空数组（上游 bug），旧接口 /api/embed 正常——所以旧接口优先，
+    # 且把「空结果」同样视为失败继续尝试下一个。
+    for path in ("/api/embed", "/api/embeddings"):
         try:
             resp = httpx.post(
                 settings.ollama_base_url.rstrip("/") + path,
@@ -36,7 +38,7 @@ def _ollama_embed(texts: list[str]) -> list[list[float]]:
             if resp.status_code != 200:
                 continue
             data = resp.json()
-            if "embeddings" in data:
+            if data.get("embeddings"):
                 return list(data["embeddings"])
         except httpx.HTTPError:
             continue
