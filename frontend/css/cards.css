@@ -5,11 +5,40 @@
   box-shadow: var(--shadow);
 }
 
-/* 卡片的初始状态：藏起来 + 微微下沉，等动画把它们抬起来。
-   cards.js 在浏览器加载完后用 anime.js 给它们做 stagger 入场。 */
+/* 卡片入场动画：纯 CSS 关键帧实现。
+   为什么不继续用 JS（anime.js）做入场：
+   原实现把卡片初始 opacity 设为 0，靠 JS 动画淡入——一旦 JS 动画
+   在某个浏览器环境里没跑起来，所有卡片内容「渲染了但永久隐身」
+   （生产环境真实事故：接口 200、DOM 存在、页面一片空白）。
+   CSS 动画不依赖 JS，任何环境都保证最终可见。 */
 .card {
   opacity: 0;
-  transform: translateY(24px);
+  animation: card-in 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+/* 相邻卡片依次延迟入场（纯 CSS stagger，无需 JS 计算） */
+.card:nth-child(2) { animation-delay: 0.12s; }
+.card:nth-child(3) { animation-delay: 0.24s; }
+.card:nth-child(4) { animation-delay: 0.36s; }
+.card:nth-child(5) { animation-delay: 0.48s; }
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 无障碍：用户系统开启「减少动态效果」时直接显示，不做动画 */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 .section-kicker {

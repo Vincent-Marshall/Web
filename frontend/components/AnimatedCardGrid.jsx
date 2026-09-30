@@ -1,28 +1,7 @@
-"use client";
-
-// 用法：<AnimatedCardGrid className="dashboard-grid">… hero + 几张卡片 …</AnimatedCardGrid>
-// 和 4.4 一字未改——同一份"卡片飞入"动画。
-// 因为用了 useEffect / anime.js，要在浏览器里跑，所以顶上标了 "use client"。
-import { useEffect, useRef } from "react";
-import { animate, stagger } from "animejs";
-
+// 卡片网格容器。
+// 入场动画已改为纯 CSS（css/cards.css 的 @keyframes card-in），
+// 本组件不再负责动画——JS 动画失败曾导致卡片永久 invisible 的生产事故。
+// 保留组件名以免各页面引用改动，它现在只是一个语义化容器。
 export default function AnimatedCardGrid({ className, children }) {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const cards = ref.current.querySelectorAll(".card");
-    animate(cards, {
-      opacity: [0, 1],
-      translateY: [24, 0],
-      delay: stagger(120),     // 每张卡错开 120ms
-      duration: 700,
-      ease: "outBack",         // 弹性落地
-    });
-  }, []);
-
-  return (
-    <section ref={ref} className={className}>
-      {children}
-    </section>
-  );
+  return <section className={className}>{children}</section>;
 }
